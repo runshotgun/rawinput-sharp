@@ -19,11 +19,25 @@ public class HidReader
         {
             capabilities = HidP.GetCaps((IntPtr)preparsedDataPtr);
 
-            var buttonCaps = HidP.GetButtonCaps((IntPtr)preparsedDataPtr, HidPReportType.Input);
-            ButtonSets = buttonCaps.Select(i => new HidButtonSet(this, i)).ToArray();
+            if(capabilities.NumberInputButtonCaps > 0)
+            {
+                var buttonCaps = HidP.GetButtonCaps((IntPtr)preparsedDataPtr, HidPReportType.Input);
+                ButtonSets = buttonCaps.Select(i => new HidButtonSet(this, i)).ToArray();
+            }
+            else
+            {
+                ButtonSets = new HidButtonSet[0];
+            }
 
-            var valueCaps = HidP.GetValueCaps((IntPtr)preparsedDataPtr, HidPReportType.Input);
-            ValueSets = valueCaps.Select(i => new HidValueSet(this, i)).ToArray();
+            if(capabilities.NumberInputValueCaps > 0)
+            {
+                var valueCaps = HidP.GetValueCaps((IntPtr)preparsedDataPtr, HidPReportType.Input);
+                ValueSets = valueCaps.Select(i => new HidValueSet(this, i)).ToArray();
+            }
+            else
+            {
+                ValueSets = new HidValueSet[0];
+            }
         }
     }
 }
